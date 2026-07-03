@@ -70,11 +70,3 @@ func (repository *UserRepositoryImpl) Delete(ctx context.Context, db *gorm.DB, i
 	err := db.WithContext(ctx).Delete(&domain.User{}, "id = ?", id).Error
 	helper.PanicIfError(err)
 }
-
-func (repository *UserRepositoryImpl) FindAll(ctx context.Context, db *gorm.DB) (_ []domain.User) {
-	var users []domain.User
-	err := db.WithContext(ctx).Find(&users).Error
-	helper.PanicIfError(err)
-
-	return users
-}

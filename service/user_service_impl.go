@@ -3,7 +3,6 @@ package service
 import (
 	"GO-AUTH-JWT/exception"
 	"GO-AUTH-JWT/helper"
-	"GO-AUTH-JWT/models/domain"
 	"GO-AUTH-JWT/models/dto/request"
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/repository"
@@ -37,21 +36,6 @@ func NewUserService(userRepository repository.UserRepository, DB *gorm.DB, valid
 	}
 }
 
-func (service *UserServiceImpl) Create(ctx context.Context, request request.UserCreateRequest) (_ response.UserResponse) {
-	err := service.validate.Struct(request)
-	helper.PanicIfError(err)
-
-	user := domain.User{
-		Name:     request.Name,
-		Email:    request.Email,
-		Password: request.Password,
-	}
-
-	user = service.UserRepository.Save(ctx, service.DB, &user)
-
-	return helper.ToUserResponse(user)
-}
-
 func (service *UserServiceImpl) Update(ctx context.Context, request request.UserUpdateRequest) (_ response.UserResponse) {
 	err := service.validate.Struct(request)
 	helper.PanicIfError(err)
@@ -76,26 +60,4 @@ func (service *UserServiceImpl) Delete(ctx context.Context, userId int64) {
 		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
 	}
 	service.UserRepository.Delete(ctx, service.DB, user.ID)
-}
-
-func (service *UserServiceImpl) FindById(ctx context.Context, userId int64) (_ response.UserResponse) {
-	user, err := service.UserRepository.FindById(ctx, service.DB, userId)
-	if err != nil {
-		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
-	}
-	return helper.ToUserResponse(user)
-}
-
-func (service *UserServiceImpl) FindByEmail(ctx context.Context, email string) (_ response.UserResponse) {
-	user, err := service.UserRepository.FindByEmail(ctx, service.DB, email)
-	if err != nil {
-		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
-	}
-	return helper.ToUserResponse(user)
-}
-
-func (service *UserServiceImpl) FindAll(ctx context.Context) (_ []response.UserResponse) {
-	users := service.UserRepository.FindAll(ctx, service.DB)
-
-	return helper.ToUsersResponse(users)
 }

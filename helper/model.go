@@ -18,10 +18,9 @@ import (
 
 func ToUserResponse(user domain.User) response.UserResponse {
 	return response.UserResponse{
-		ID:       user.ID,
-		Name:     user.Name,
-		Email:    user.Email,
-		Password: user.Password,
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
 	}
 }
 
@@ -50,4 +49,11 @@ func ToEventsResponse(events []domain.Event) []response.EventResponse {
 		eventsResponse = append(eventsResponse, ToEventResponse(event))
 	}
 	return eventsResponse
+}
+
+func ToLoginResponse(user domain.User, token string) response.LoginResponse {
+	return response.LoginResponse{
+		Token: token,
+		User:  ToUserResponse(user),
+	}
 }

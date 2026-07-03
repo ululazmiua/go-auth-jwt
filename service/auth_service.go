@@ -16,7 +16,7 @@ import (
 // ● pemanggilan repository
 // ● aturan bisnis (misalnya cek duplikat, dll)
 
-type UserService interface {
-	Update(ctx context.Context, request request.UserUpdateRequest) response.UserResponse
-	Delete(ctx context.Context, userId int64)
+type AuthService interface {
+	Register(ctx context.Context, request request.UserCreateRequest) response.UserResponse
+	Login(ctx context.Context, request request.UserLoginRequest) response.LoginResponse
 }
