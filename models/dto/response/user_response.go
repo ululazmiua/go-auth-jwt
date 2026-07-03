@@ -10,8 +10,7 @@ package response
 // ● DTO (Data Transfer Object)
 
 type UserResponse struct {
-	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }

@@ -23,6 +23,10 @@ import (
 type EventRepositoryImpl struct {
 }
 
+func NewEventRepository() EventRepository {
+	return &EventRepositoryImpl{}
+}
+
 func (repository *EventRepositoryImpl) Save(ctx context.Context, db *gorm.DB, event *domain.Event, userID int64) domain.Event {
 	var user domain.User
 	err := db.WithContext(ctx).First(&user, userID).Error

@@ -1,4 +1,4 @@
-package config
+package app
 
 import (
 	"time"
@@ -15,7 +15,7 @@ import (
 func OpenConnection() *gorm.DB {
 	// ! MySQL
 	// "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
-	dialect := mysql.Open("root:gaktau4321@tcp(localhost:3306)/belajar_golang_gorm?charset=utf8mb4&parseTime=True&loc=Local") // ? mysql.Open(dsn string) digunakan untuk membuat koneksi ke database MySQL, dengan parameter berupa string yang berisi informasi koneksi seperti username, password, host, port, dan nama database.
+	dialect := mysql.Open("root:gaktau4321@tcp(localhost:3306)/go_auth_jwt?charset=utf8mb4&parseTime=True&loc=Local") // ? mysql.Open(dsn string) digunakan untuk membuat koneksi ke database MySQL, dengan parameter berupa string yang berisi informasi koneksi seperti username, password, host, port, dan nama database.
 	db, err := gorm.Open(dialect, &gorm.Config{                                                                               // ? gorm.Open(dialector gorm.Dialector, config *gorm.Config)(db *gorm.DB, err error) digunakan untuk membuka koneksi ke database dengan menggunakan dialector yang sesuai dengan jenis database yang digunakan, serta konfigurasi tambahan jika diperlukan.
 		Logger: logger.Default.LogMode(logger.Info), // ? &gorm.Config{Logger: logger.Default.LogMode(logger.Info)} digunakan untuk mengatur konfigurasi GORM, khususnya untuk mengaktifkan logging dengan level Info. Dengan menggunakan Logger: logger.Default.LogMode(logger.Info), GORM akan mencatat semua query SQL yang dieksekusi beserta informasi tambahan seperti waktu eksekusi dan jumlah baris yang terpengaruh. Hal ini sangat berguna untuk debugging dan memantau performa aplikasi saat berinteraksi dengan database.
 	})

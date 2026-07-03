@@ -83,12 +83,12 @@ func (service *AuthServiceImpl) Login(ctx context.Context, request request.UserL
 	}
 
 	// ! JWT logic
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{ // ? jwt.NewWithClaims(signingMethod jwt.SigningMethod, claims jwt.Claims) *Token => digunakan untuk membuat token baru dengan signing method dan claims yang diberikan, jika signing method adalah HS256 maka claims harus bertipe jwt.MapClaims, jika signing method adalah RS256 maka claims harus bertipe jwt.RegisteredClaims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{ // ? jwt.NewWithClaims(signingMethod jwt.SigningMethod, claims jwt.Claims) *Token => digunakan untuk membuat token baru dengan signing method dan claims yang diberikan, jika signing method adalah HS256 maka claims harus bertipe jwt.MapClaims, jika signing method adalah RS256 maka claims harus bertipe jwt.RegisteredClaims. Jwt.MapClaims() => Mengisi informasi yang ingin disimpan di dalam JWT(misal id dan sebagainya)
 		"sub": user.ID,                                   // ? sub digunakan untuk menyimpan id user
 		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(), // ? exp digunakan untuk menyimpan waktu kadaluarsa token
 	})
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET"))) // ? SignedString(key []byte) (string, error) => digunakan untuk mengenkripsi token menggunakan algoritma HS256, key adalah secret key yang digunakan untuk mengenkripsi token, jika key tidak valid maka akan mengembalikan error
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET"))) // ? SignedString(key []byte) (string, error) => digunakan untuk menambahkan signature ke token yaitu JWT_SECRET difile .env
 	if err != nil {
 		panic(err)
 	}
