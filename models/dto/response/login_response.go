@@ -13,4 +13,3 @@ type LoginResponse struct {
 	Token string
 	User  UserResponse
 }
-	

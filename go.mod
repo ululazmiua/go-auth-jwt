@@ -4,6 +4,9 @@ go 1.25.5
 
 require (
 	github.com/go-playground/validator/v10 v10.30.3
+	github.com/gofiber/fiber/v3 v3.4.0
+	github.com/golang-jwt/jwt/v5 v5.3.1
+	golang.org/x/crypto v0.53.0
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.31.2
 )
@@ -15,7 +18,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
-	github.com/gofiber/fiber/v3 v3.4.0 // indirect
 	github.com/gofiber/schema v1.8.0 // indirect
 	github.com/gofiber/utils/v2 v2.1.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -29,7 +31,6 @@ require (
 	github.com/tinylib/msgp v1.6.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.72.0 // indirect
-	golang.org/x/crypto v0.53.0 // indirect
 	golang.org/x/net v0.56.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
 	golang.org/x/text v0.38.0 // indirect

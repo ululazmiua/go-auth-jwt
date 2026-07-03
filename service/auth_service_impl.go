@@ -8,6 +8,10 @@ import (
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/repository"
 	"context"
+	"os"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
@@ -47,7 +51,7 @@ func (service *AuthServiceImpl) Register(ctx context.Context, request request.Us
 		panic(exception.NewEmailAlreadyExistsError("email already exists"))
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword(
+	hashedPassword, err := bcrypt.GenerateFromPassword( // ? bcrypt.GenerateFromPassword(password []byte, cost int) ([]byte, error) => digunakan untuk mengenkripsi password menggunakan algoritma bcrypt, cost digunakan untuk menentukan kompleksitas algoritma misalnya 10 atau 12 yang artinya password akan dienkripsi sebanyak 10 atau 12 kali
 		[]byte(request.Password),
 		bcrypt.DefaultCost,
 	)
@@ -78,12 +82,17 @@ func (service *AuthServiceImpl) Login(ctx context.Context, request request.UserL
 		panic(exception.NewUnauthorizedError("invalid email or password"))
 	}
 
-	// generate token logic
-	// ! Add JWT token logic here
-	// ! Add JWT token logic here
-	// ! Add JWT token logic here
-	// ! Add JWT token logic here
-	// ! Add JWT token logic here
-	// ! Add JWT token logic here
-	return helper.ToLoginResponse(user, "token")
+	// ! JWT logic
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{ // ? jwt.NewWithClaims(signingMethod jwt.SigningMethod, claims jwt.Claims) *Token => digunakan untuk membuat token baru dengan signing method dan claims yang diberikan, jika signing method adalah HS256 maka claims harus bertipe jwt.MapClaims, jika signing method adalah RS256 maka claims harus bertipe jwt.RegisteredClaims
+		"sub": user.ID,                                   // ? sub digunakan untuk menyimpan id user
+		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(), // ? exp digunakan untuk menyimpan waktu kadaluarsa token
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET"))) // ? SignedString(key []byte) (string, error) => digunakan untuk mengenkripsi token menggunakan algoritma HS256, key adalah secret key yang digunakan untuk mengenkripsi token, jika key tidak valid maka akan mengembalikan error
+	if err != nil {
+		panic(err)
+	}
+
+	helper.PanicIfError(err)
+	return helper.ToLoginResponse(user, tokenString)
 }

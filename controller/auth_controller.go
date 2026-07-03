@@ -14,7 +14,7 @@ import "github.com/gofiber/fiber/v3"
 // ● handler PUT user
 // ● handler DELETE user
 
-type UserController interface {
-	Update(ctx *fiber.Ctx) error
-	Delete(ctx *fiber.Ctx) error
+type AuthController interface {
+	Register(ctx *fiber.Ctx) error
+	Login(ctx *fiber.Ctx) error
 }
