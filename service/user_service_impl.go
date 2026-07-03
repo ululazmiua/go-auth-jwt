@@ -12,15 +12,15 @@ import (
 	"gorm.io/gorm"
 )
 
-// ! category_service_impl.go itu untuk apa?
+// ! user_service_impl.go itu untuk apa?
 // ● File implementasi dari interface service
-// ● Tempat isi nyata logika bisnis category
+// ● Tempat isi nyata logika bisnis user
 // ● Mengolah data sebelum/sesudah ke repository
 // ● Biasanya berisi:
-// ● validasi input category
-// ● pemanggilan category_repository
+// ● validasi input user
+// ● pemanggilan user_repository
 // ● pengaturan transaksi (tx)
-// ● aturan bisnis category
+// ● aturan bisnis user
 
 type UserServiceImpl struct {
 	UserRepository repository.UserRepository // ? tidak perlu dibuat pointer karena merupakan interface
