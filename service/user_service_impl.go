@@ -1,6 +1,7 @@
 package service
 
 import (
+	"GO-AUTH-JWT/exception"
 	"GO-AUTH-JWT/helper"
 	"GO-AUTH-JWT/models/domain"
 	"GO-AUTH-JWT/models/dto/request"
@@ -56,7 +57,9 @@ func (service *UserServiceImpl) Update(ctx context.Context, request request.User
 	helper.PanicIfError(err)
 
 	user, err := service.UserRepository.FindById(ctx, service.DB, int64(request.ID))
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+	}
 
 	user.Name = request.Name
 	user.Email = request.Email
@@ -68,18 +71,26 @@ func (service *UserServiceImpl) Update(ctx context.Context, request request.User
 }
 
 func (service *UserServiceImpl) Delete(ctx context.Context, userId int64) {
-	service.UserRepository.Delete(ctx, service.DB, userId)
+	user, err := service.UserRepository.FindById(ctx, service.DB, userId)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+	}
+	service.UserRepository.Delete(ctx, service.DB, user.ID)
 }
 
 func (service *UserServiceImpl) FindById(ctx context.Context, userId int64) (_ response.UserResponse) {
 	user, err := service.UserRepository.FindById(ctx, service.DB, userId)
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+	}
 	return helper.ToUserResponse(user)
 }
 
 func (service *UserServiceImpl) FindByEmail(ctx context.Context, email string) (_ response.UserResponse) {
 	user, err := service.UserRepository.FindByEmail(ctx, service.DB, email)
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+	}
 	return helper.ToUserResponse(user)
 }
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"GO-AUTH-JWT/exception"
 	"GO-AUTH-JWT/helper"
 	"GO-AUTH-JWT/models/domain"
 	"GO-AUTH-JWT/models/dto/request"
@@ -57,7 +58,9 @@ func (service *EventServiceImpl) Update(ctx context.Context, request request.Eve
 	helper.PanicIfError(err)
 
 	event, err := service.EventRepository.FindById(ctx, service.DB, request.ID, request.UserId)
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+	}
 
 	event.Name = request.Name
 	event.Description = request.Description
@@ -70,12 +73,18 @@ func (service *EventServiceImpl) Update(ctx context.Context, request request.Eve
 }
 
 func (service *EventServiceImpl) Delete(ctx context.Context, eventId int64, userId int64) {
-	service.EventRepository.Delete(ctx, service.DB, eventId, userId)
+	event, err := service.EventRepository.FindById(ctx, service.DB, eventId, userId)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+	}
+	service.EventRepository.Delete(ctx, service.DB, event.ID, userId)
 }
 
 func (service *EventServiceImpl) FindById(ctx context.Context, eventId int64, userId int64) (_ response.EventResponse) {
 	event, err := service.EventRepository.FindById(ctx, service.DB, eventId, userId)
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+	}
 
 	return helper.ToEventResponse(event)
 }
