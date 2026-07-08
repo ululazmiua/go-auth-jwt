@@ -3,12 +3,14 @@ package main
 import (
 	"GO-AUTH-JWT/app"
 	"GO-AUTH-JWT/controller"
+	"GO-AUTH-JWT/exception"
 	"GO-AUTH-JWT/repository"
 	"GO-AUTH-JWT/service"
 	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/recover"
 )
 
 // ! main.go itu untuk apa?
@@ -58,18 +60,15 @@ func main() {
 		● Contoh yang bisa kita gunakan adalah mengubah konfigurasi timeout
 	*/
 	appFiber := fiber.New(fiber.Config{ // ? fiber.New(fiber.Config) *fiber.App, digunakan untuk membuat object Fiber baru
-		ReadTimeout:  5 * time.Second, // ? ReadTimeout adalah waktu maksimal untuk membaca request dari client
-		WriteTimeout: 5 * time.Second, // ? WriteTimeout adalah waktu maksimal untuk menulis response ke client
-		IdleTimeout:  5 * time.Second, // ? IdleTimeout adalah waktu maksimal untuk menjaga koneksi tetap terbuka tanpa aktivitas
-		ErrorHandler: func(ctx fiber.Ctx, err error) error {
-			ctx.Status(fiber.StatusInternalServerError)                    // ? c.Status(code int) *fiber.Ctx, digunakan untuk mengatur status code HTTP Response yang akan dikirim ke client
-			return ctx.SendString("Internal Server Error: " + err.Error()) // ? c.SendString(data string) error, digunakan untuk mengirim response berupa string ke client
-		},
+		ReadTimeout:  5 * time.Second,        // ? ReadTimeout adalah waktu maksimal untuk membaca request dari client
+		WriteTimeout: 5 * time.Second,        // ? WriteTimeout adalah waktu maksimal untuk menulis response ke client
+		IdleTimeout:  5 * time.Second,        // ? IdleTimeout adalah waktu maksimal untuk menjaga koneksi tetap terbuka tanpa aktivitas
+		ErrorHandler: exception.ErrorHandler, // ? ErrorHandler untuk menangani error
 	})
+	appFiber.Use(recover.New())
 
 	// ! Routing
 	router := app.NewRouter(appFiber, authController)
-
 
 	// ! Start Server
 	err := router.Listen("localhost:3000", fiber.ListenConfig{

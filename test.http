@@ -2,11 +2,11 @@
 POST http://localhost:3000/register
 Content-Type: application/x-www-form-urlencoded
 
-name=ulul&email=ulul@gmail.com&password=123456Uaa
+name=ulul&email=ulul@gmail.com
 
 
 ### Login
 POST http://localhost:3000/login
 Content-Type: application/x-www-form-urlencoded
 
-email=ulul@gmail.com&password=123456Uaa
+email=uluaal@gmail.com&password=123456Uaa

@@ -17,6 +17,5 @@ func NewRouter(app *fiber.App, authController controller.AuthController) *fiber.
 	app.Post("/register", authController.Register)
 	app.Post("/login", authController.Login)
 
-
 	return app
 }

@@ -69,9 +69,12 @@ func (service *AuthServiceImpl) Register(ctx context.Context, request request.Us
 }
 
 func (service *AuthServiceImpl) Login(ctx context.Context, request request.UserLoginRequest) (_ response.LoginResponse) {
+	err := service.validate.Struct(request)
+	helper.PanicIfError(err)
+
 	user, err := service.UserRepository.FindByEmail(ctx, service.DB, request.Email)
 	if err != nil {
-		panic(exception.NewUnauthorizedError("invalid email or password"))
+		panic(exception.NewInvalidEmailPassword("invalid email or password"))
 	}
 	// ! Add password validation logic here
 	err = bcrypt.CompareHashAndPassword( // ? bcrypt.CompareHashAndPassword(hashedPassword []byte, password []byte) error => digunakan untuk membandingkan password yang diinputkan user dengan password yang ada di database, jika password sama maka akan mengembalikan nil, jika tidak maka akan mengembalikan error
@@ -79,7 +82,7 @@ func (service *AuthServiceImpl) Login(ctx context.Context, request request.UserL
 		[]byte(request.Password),
 	)
 	if err != nil {
-		panic(exception.NewUnauthorizedError("invalid email or password"))
+		panic(exception.NewInvalidEmailPassword("invalid email or password"))
 	}
 
 	// ! JWT logic
@@ -89,10 +92,7 @@ func (service *AuthServiceImpl) Login(ctx context.Context, request request.UserL
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET"))) // ? SignedString(key []byte) (string, error) => digunakan untuk menambahkan signature ke token yaitu JWT_SECRET difile .env
-	if err != nil {
-		panic(err)
-	}
-
 	helper.PanicIfError(err)
+
 	return helper.ToLoginResponse(user, tokenString)
 }

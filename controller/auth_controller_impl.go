@@ -4,6 +4,7 @@ import (
 	"GO-AUTH-JWT/models/dto/request"
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/service"
+	"context"
 	"fmt"
 	"net/http"
 
@@ -43,7 +44,9 @@ func (controller *AuthControllerImpl) Register(ctx fiber.Ctx) error {
 		Email:    email,
 		Password: password,
 	}
-	userResponse := controller.AuthService.Register(ctx, request)
+	context := context.Background()
+
+	userResponse := controller.AuthService.Register(context, request)
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
@@ -61,7 +64,8 @@ func (controller *AuthControllerImpl) Login(ctx fiber.Ctx) error {
 		Email:    email,
 		Password: password,
 	}
-	loginResponse := controller.AuthService.Login(ctx, request)
+	context := context.Background()
+	loginResponse := controller.AuthService.Login(context, request)
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
