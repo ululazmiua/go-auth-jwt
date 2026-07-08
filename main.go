@@ -4,6 +4,7 @@ import (
 	"GO-AUTH-JWT/helper"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/joho/godotenv"
 )
 
 // ! main.go itu untuk apa?
@@ -29,6 +30,11 @@ func main() {
 	● Layer atas boleh tahu layer bawah,
 	● layer bawah tidak tahu layer atas
 	*/
+
+	err := godotenv.Load()
+	if err != nil {
+		helper.PanicIfError(err)
+	}
 
 	// ! ! ! TANPA DEPENDENCY INJECTION
 
@@ -73,7 +79,7 @@ func main() {
 	// ! ! ! DENGAN DEPENDENCY INJECTION
 	server := InitializedServer()
 
-	err := server.App.Listen("localhost:3000", fiber.ListenConfig{
+	err = server.App.Listen("localhost:3000", fiber.ListenConfig{
 		EnablePrefork: true, // ? EnablePrefork adalah opsi untuk mengaktifkan preforking, jika diaktifkan, maka Fiber akan menjalankan server dalam mode preforking, sehingga lebih cepat dalam menjalankan server, karena Fiber akan membuat beberapa proses worker untuk menangani request secara bersamaan, sehingga meningkatkan performa server(menggunakan semua core CPU yang tersedia)
 	}) // ? app.Listen(addr string, config ...fiber.listenConfig) error, digunakan untuk menjalankan aplikasi Fiber pada alamat dan port tertentu
 
