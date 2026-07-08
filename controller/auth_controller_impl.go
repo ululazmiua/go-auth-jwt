@@ -5,7 +5,6 @@ import (
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/service"
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v3"
@@ -36,8 +35,6 @@ func (controller *AuthControllerImpl) Register(ctx fiber.Ctx) error {
 	name := ctx.FormValue("name")
 	email := ctx.FormValue("email")
 	password := ctx.FormValue("password")
-
-	fmt.Println(name, email, password)
 
 	request := request.UserCreateRequest{
 		Name:     name,

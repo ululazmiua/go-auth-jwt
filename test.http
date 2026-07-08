@@ -2,11 +2,28 @@
 POST http://localhost:3000/register
 Content-Type: application/x-www-form-urlencoded
 
-name=ulul&email=ulul@gmail.com
+name=ulul&email=ululazmi@gmail.com&password=123456Ua
 
 
 ### Login
 POST http://localhost:3000/login
 Content-Type: application/x-www-form-urlencoded
 
-email=uluaal@gmail.com&password=123456Uaa
+email=Ulull@gmail.com&password=123456Ua
+
+
+### Update User
+PUT http://localhost:3000/user/3
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name" : "Ulul Azmi",
+    "email" : "Ulull@gmail.com",
+    "password" : "123456Ua"
+}
+
+
+### Delete User
+DELETE http://localhost:3000/user/4
+Accept: application/json 

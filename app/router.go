@@ -12,10 +12,12 @@ import (
 // ● Setup router & middleware
 // ● Menyiapkan dependency (repository, service, controller)
 
-func NewRouter(app *fiber.App, authController controller.AuthController) *fiber.App {
+func NewRouter(app *fiber.App, authController controller.AuthController, userController controller.UserController) *fiber.App {
 
 	app.Post("/register", authController.Register)
 	app.Post("/login", authController.Login)
+	app.Put("/user/:id", userController.Update)
+	app.Delete("/user/:id", userController.Delete)
 
 	return app
 }

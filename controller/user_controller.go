@@ -15,6 +15,6 @@ import "github.com/gofiber/fiber/v3"
 // ● handler DELETE user
 
 type UserController interface {
-	Update(ctx *fiber.Ctx) error
-	Delete(ctx *fiber.Ctx) error
+	Update(ctx fiber.Ctx) error
+	Delete(ctx fiber.Ctx) error
 }

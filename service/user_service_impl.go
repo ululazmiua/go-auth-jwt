@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -47,7 +48,14 @@ func (service *UserServiceImpl) Update(ctx context.Context, request request.User
 
 	user.Name = request.Name
 	user.Email = request.Email
-	user.Password = request.Password
+
+	hashedPassword, err := bcrypt.GenerateFromPassword( // ? bcrypt.GenerateFromPassword(password []byte, cost int) ([]byte, error) => digunakan untuk mengenkripsi password menggunakan algoritma bcrypt, cost digunakan untuk menentukan kompleksitas algoritma misalnya 10 atau 12 yang artinya password akan dienkripsi sebanyak 10 atau 12 kali
+		[]byte(request.Password),
+		bcrypt.DefaultCost,
+	)
+	helper.PanicIfError(err)
+
+	user.Password = string(hashedPassword)
 
 	user = service.UserRepository.Update(ctx, service.DB, &user)
 

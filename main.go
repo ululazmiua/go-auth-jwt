@@ -45,13 +45,13 @@ func main() {
 	userRepository := repository.NewUserRepository() // ? repository.NewUserRepository(db) digunakan untuk inisialisasi repository user
 	// eventRepository := repository.NewEventRepository() // ? repository.NewEventRepository(db) digunakan untuk inisialisasi repository event
 
-	// userService := service.NewUserService(userRepository, db, validate)
+	userService := service.NewUserService(userRepository, db, validate)
 	// eventService := service.NewEventService(eventRepository, db, validate)
 	authService := service.NewAuthService(userRepository, db, validate)
 
 	authController := controller.NewAuthController(authService)
 	// eventController := controller.NewEventController(eventService)
-	// userController := controller.NewUserController(userService)
+	userController := controller.NewUserController(userService)
 
 	/*
 		! Configuration
@@ -68,7 +68,7 @@ func main() {
 	appFiber.Use(recover.New())
 
 	// ! Routing
-	router := app.NewRouter(appFiber, authController)
+	router := app.NewRouter(appFiber, authController, userController)
 
 	// ! Start Server
 	err := router.Listen("localhost:3000", fiber.ListenConfig{

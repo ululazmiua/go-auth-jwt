@@ -2,7 +2,6 @@ package exception
 
 import (
 	"GO-AUTH-JWT/models/dto/response"
-	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -16,10 +15,10 @@ import (
 // ● Supaya aplikasi tidak panic sembarangan dan response API tetap rapi
 
 func ErrorHandler(c fiber.Ctx, err error) error {
-	// Cetak ini ke terminal untuk melihat tipe aslinya
-	fmt.Printf("Tipe error asli: %T | Nilai: %v\n", err, err)
+	// debug
+	// fmt.Printf("Tipe error asli: %T | Nilai: %v\n", err, err)
 
-	if invalidEmailPassword(c, err) { // <-- Tambahkan pengecekan ini
+	if invalidEmailPassword(c, err) {
 		return nil
 	}
 	if emailAlreadyExistsError(c, err) {
@@ -62,7 +61,6 @@ func emailAlreadyExistsError(ctx fiber.Ctx, err any) bool {
 			Status: http.StatusText(http.StatusBadRequest),
 			Data:   exception.error,
 		}
-		fmt.Println(webResponse)
 		ctx.JSON(webResponse)
 		return true
 	}
@@ -79,7 +77,6 @@ func notFoundError(ctx fiber.Ctx, err any) bool {
 			Status: http.StatusText(http.StatusNotFound),
 			Data:   exception.error, // ? exception.error => digunakan untuk mengambil pesan error
 		}
-		fmt.Println(webResponse)
 
 		ctx.JSON(webResponse)
 		return true
@@ -99,7 +96,6 @@ func validationError(ctx fiber.Ctx, err any) bool {
 			Status: http.StatusText(http.StatusBadRequest),
 			Data:   exception.Error(), // ? exception.error => digunakan untuk mengambil pesan error
 		}
-		fmt.Println(webResponse)
 
 		ctx.JSON(webResponse)
 		return true
@@ -117,8 +113,6 @@ func InternalServerError(ctx fiber.Ctx, err any) {
 		Status: http.StatusText(http.StatusInternalServerError),
 		Data:   err,
 	}
-
-	fmt.Println(webResponse)
 
 	ctx.JSON(webResponse)
 }
