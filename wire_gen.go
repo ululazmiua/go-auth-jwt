@@ -18,7 +18,7 @@ import (
 // Injectors from injector.go:
 
 func InitializedServer() *app.Server {
-	fiberApp := NewServer()
+	fiberApp := app.NewServer()
 	repositoryUserRepository := repository.NewUserRepository()
 	db := app.OpenConnection()
 	v := _wireValue

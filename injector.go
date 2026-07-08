@@ -34,7 +34,7 @@ var eventSet = wire.NewSet(
 
 func InitializedServer() *app.Server {
 	wire.Build(
-		NewServer,
+		app.NewServer,
 		app.OpenConnection,
 		validator.New,                    // ? validator.New digunakan untuk inisialisasi validator
 		wire.Value([]validator.Option{}), // ? wire.Value(value interface{}) dipakai untuk memasukkan nilai langsung sebagai dependency, []validator.Option{} artinya memasukkan []validator.Option{} sebagai dependency ke wire

@@ -1,12 +1,9 @@
 package main
 
 import (
-	"GO-AUTH-JWT/exception"
 	"GO-AUTH-JWT/helper"
-	"time"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/recover"
 )
 
 // ! main.go itu untuk apa?
@@ -20,19 +17,6 @@ import (
 // ● inisialisasi DB
 // ● wiring struct (dependency injection)
 // ● start server
-
-// untuk dependecy injection google wire, maka perlu di modifikasi seperti ini
-func NewServer() *fiber.App {
-	appFiber := fiber.New(fiber.Config{ // ? fiber.New(fiber.Config) *fiber.App, digunakan untuk membuat object Fiber baru
-		ReadTimeout:  5 * time.Second,        // ? ReadTimeout adalah waktu maksimal untuk membaca request dari client
-		WriteTimeout: 5 * time.Second,        // ? WriteTimeout adalah waktu maksimal untuk menulis response ke client
-		IdleTimeout:  5 * time.Second,        // ? IdleTimeout adalah waktu maksimal untuk menjaga koneksi tetap terbuka tanpa aktivitas
-		ErrorHandler: exception.ErrorHandler, // ? ErrorHandler untuk menangani error
-	})
-	appFiber.Use(recover.New())
-
-	return appFiber
-}
 
 func main() {
 	/*// ! layer clean architecture
