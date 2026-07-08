@@ -4,7 +4,6 @@ import (
 	"GO-AUTH-JWT/models/dto/request"
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/service"
-	"context"
 	"net/http"
 
 	"github.com/gofiber/fiber/v3"
@@ -41,9 +40,8 @@ func (controller *AuthControllerImpl) Register(ctx fiber.Ctx) error {
 		Email:    email,
 		Password: password,
 	}
-	context := context.Background()
 
-	userResponse := controller.AuthService.Register(context, request)
+	userResponse := controller.AuthService.Register(ctx.Context(), request)
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
@@ -61,8 +59,8 @@ func (controller *AuthControllerImpl) Login(ctx fiber.Ctx) error {
 		Email:    email,
 		Password: password,
 	}
-	context := context.Background()
-	loginResponse := controller.AuthService.Login(context, request)
+
+	loginResponse := controller.AuthService.Login(ctx.Context(), request)
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
