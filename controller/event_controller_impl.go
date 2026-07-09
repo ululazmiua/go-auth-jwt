@@ -38,11 +38,7 @@ func (controller *EventControllerImpl) Create(ctx fiber.Ctx) (_ error) {
 	helper.PanicIfError(err)
 
 	// ! ambil id user dari token
-	// userId := ctx.Locals("userId").(float64)	// ctx.Locals() => untuk mengambil data dari context
-	// eventRequest.UserId = int64(userId)
-	userId, err := strconv.Atoi(ctx.Params("userId"))
-	helper.PanicIfError(err)
-
+	userId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
 	eventRequest.UserId = int64(userId)
 
 	eventResponse := controller.EventService.Create(ctx.Context(), eventRequest)
@@ -63,10 +59,8 @@ func (controller *EventControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 	helper.PanicIfError(err)
 
 	// ! ambil id user dari token
-	// userId := ctx.Locals("userId").(float64)	// ctx.Locals() => untuk mengambil data dari context
-	// eventRequest.UserId = int64(userId)
-	userId, err := strconv.Atoi(ctx.Params("userId"))
-	helper.PanicIfError(err)
+	userId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
+	eventRequest.UserId = int64(userId)
 
 	eventRequest.ID = int64(EventId)
 	eventRequest.UserId = int64(userId)
@@ -82,13 +76,14 @@ func (controller *EventControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 }
 
 func (controller *EventControllerImpl) Delete(ctx fiber.Ctx) (_ error) {
+
 	// ! ambil id user dari token
-	UserId, err := strconv.Atoi(ctx.Params("userId"))
+	userId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
 	EventId, err := strconv.Atoi(ctx.Params("eventId"))
 
 	helper.PanicIfError(err)
 
-	controller.EventService.Delete(ctx.Context(), int64(EventId), int64(UserId))
+	controller.EventService.Delete(ctx.Context(), int64(EventId), int64(userId))
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
 		Status: http.StatusText(http.StatusOK),
@@ -97,12 +92,13 @@ func (controller *EventControllerImpl) Delete(ctx fiber.Ctx) (_ error) {
 
 func (controller *EventControllerImpl) FindById(ctx fiber.Ctx) (_ error) {
 	// ! ambil id user dari token
-	UserId, err := strconv.Atoi(ctx.Params("userId"))
+	userId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
+
 	EventId, err := strconv.Atoi(ctx.Params("eventId"))
 
 	helper.PanicIfError(err)
 
-	eventResponse := controller.EventService.FindById(ctx.Context(), int64(EventId), int64(UserId))
+	eventResponse := controller.EventService.FindById(ctx.Context(), int64(EventId), int64(userId))
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
 		Status: http.StatusText(http.StatusOK),
@@ -111,10 +107,10 @@ func (controller *EventControllerImpl) FindById(ctx fiber.Ctx) (_ error) {
 }
 
 func (controller *EventControllerImpl) FindAll(ctx fiber.Ctx) (_ error) {
-	UserId, err := strconv.Atoi(ctx.Params("userId"))
-	helper.PanicIfError(err)
+	// ! ambil id user dari token
+	userId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
 
-	EventsResponse := controller.EventService.FindAll(ctx.Context(), int64(UserId))
+	EventsResponse := controller.EventService.FindAll(ctx.Context(), int64(userId))
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,

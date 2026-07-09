@@ -6,7 +6,6 @@ import (
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -35,12 +34,11 @@ func NewUserController(userService service.UserService) UserController {
 func (controller *UserControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 	userUpdateRequest := request.UserUpdateRequest{}
 	err := ctx.Bind().Body(&userUpdateRequest)
-
-	UserId, err := strconv.Atoi(ctx.Params("id"))
 	helper.PanicIfError(err)
 
-	userUpdateRequest.ID = UserId
-	
+	UserId := ctx.Locals("UserId").(float64) // ctx.Locals() => untuk mengambil data dari context
+
+	userUpdateRequest.ID = int64(UserId)
 
 	userResponse := controller.userService.Update(ctx.Context(), userUpdateRequest)
 	return ctx.JSON(response.WebResponse{
@@ -51,11 +49,9 @@ func (controller *UserControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 }
 
 func (controller *UserControllerImpl) Delete(ctx fiber.Ctx) (_ error) {
-	userUpdateRequest := ctx.Params("id")
-	userId, err := strconv.Atoi(userUpdateRequest)
-	helper.PanicIfError(err)
+	UserId := ctx.Locals("UserId").(float64) // ctx.Locals() => untuk mengambil data dari context
 
-	controller.userService.Delete(ctx.Context(), int64(userId))
+	controller.userService.Delete(ctx.Context(), int64(UserId))
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
 		Status: http.StatusText(http.StatusOK),

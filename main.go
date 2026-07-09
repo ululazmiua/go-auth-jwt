@@ -31,7 +31,7 @@ func main() {
 	● layer bawah tidak tahu layer atas
 	*/
 
-	err := godotenv.Load()
+	err := godotenv.Load() // ? godotenv.Load() digunakan untuk membaca file .env
 	if err != nil {
 		helper.PanicIfError(err)
 	}

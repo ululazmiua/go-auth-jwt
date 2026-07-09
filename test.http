@@ -13,9 +13,10 @@ email=Ulull@gmail.com&password=123456Ua
 
 
 ### Update User
-PUT http://localhost:3000/user/3
+PUT http://localhost:3000/user
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTY0NjksInN1YiI6M30.9HPRvqJHtOAP8rF2UET1LGZ6HFTJxea0R5MyHQEWQgs
 
 {
     "name" : "Ulul Azmi",
@@ -25,14 +26,16 @@ Accept: application/json
 
 
 ### Delete User
-DELETE http://localhost:3000/user/4
+DELETE http://localhost:3000/user
 Accept: application/json 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTY0NjksInN1YiI6M30.9HPRvqJHtOAP8rF2UET1LGZ6HFTJxea0R5MyHQEWQgs
 
 
 ### create event
-POST http://localhost:3000/user/3/event
+POST http://localhost:3000/user/event
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTY0NjksInN1YiI6M30.9HPRvqJHtOAP8rF2UET1LGZ6HFTJxea0R5MyHQEWQgs
 
 {
     "name" : "Studi Kasus golang",
@@ -42,9 +45,10 @@ Accept: application/json
 }
 
 ### update event 
-PUT  http://localhost:3000/user/3/event/1
+PUT  http://localhost:3000/user/event/1
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTU5NjMsInN1YiI6M30.J2W0xUXswkXsIBiyN5C5FN9W0S6OJqpK8rtLmE2QOmA
 
 {
     "name" : "Studi Kasus go-auth-jwt",
@@ -54,15 +58,18 @@ Accept: application/json
 }
 
 ### findBy id
-GET  http://localhost:3000/user/3/event/1
+GET  http://localhost:3000/user/event/1
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTU5NjMsInN1YiI6M30.J2W0xUXswkXsIBiyN5C5FN9W0S6OJqpK8rtLmE2QOmA
 
 
 ### find All
-GET  http://localhost:3000/user/3/event/
+GET  http://localhost:3000/user/event
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTU5NjMsInN1YiI6M30.J2W0xUXswkXsIBiyN5C5FN9W0S6OJqpK8rtLmE2QOmA
 
 
 ### Delete
-DELETE http://localhost:3000/user/3/event/3
+DELETE http://localhost:3000/user/event/3
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTU5NjMsInN1YiI6M30.J2W0xUXswkXsIBiyN5C5FN9W0S6OJqpK8rtLmE2QOmA

@@ -21,6 +21,9 @@ func ErrorHandler(c fiber.Ctx, err error) error {
 	if invalidEmailPassword(c, err) {
 		return nil
 	}
+	if unauthorizedError(c, err) {
+		return nil
+	}
 	if emailAlreadyExistsError(c, err) {
 		return nil
 	}
@@ -32,6 +35,23 @@ func ErrorHandler(c fiber.Ctx, err error) error {
 	}
 	InternalServerError(c, err)
 	return nil
+}
+
+func unauthorizedError(ctx fiber.Ctx, err any) bool {
+	exception, ok := err.(UnauthorizedError)
+	if ok {
+		ctx.Set("Content-Type", "application/json")
+		ctx.Status(http.StatusUnauthorized) // 401
+
+		webResponse := response.WebResponse{
+			Code:   http.StatusUnauthorized,
+			Status: http.StatusText(http.StatusUnauthorized),
+			Data:   exception.error, // atau exception.Message tergantung structmu
+		}
+		ctx.JSON(webResponse)
+		return true
+	}
+	return false
 }
 
 func invalidEmailPassword(ctx fiber.Ctx, err any) bool {
@@ -50,6 +70,7 @@ func invalidEmailPassword(ctx fiber.Ctx, err any) bool {
 	}
 	return false
 }
+
 func emailAlreadyExistsError(ctx fiber.Ctx, err any) bool {
 	exception, ok := err.(EmailAlreadyExistsError)
 	if ok {
