@@ -36,7 +36,7 @@ func (controller *UserControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 	err := ctx.Bind().Body(&userUpdateRequest)
 	helper.PanicIfError(err)
 
-	UserId := ctx.Locals("UserId").(float64) // ctx.Locals() => untuk mengambil data dari context
+	UserId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
 
 	userUpdateRequest.ID = int64(UserId)
 
@@ -49,7 +49,7 @@ func (controller *UserControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 }
 
 func (controller *UserControllerImpl) Delete(ctx fiber.Ctx) (_ error) {
-	UserId := ctx.Locals("UserId").(float64) // ctx.Locals() => untuk mengambil data dari context
+	UserId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
 
 	controller.userService.Delete(ctx.Context(), int64(UserId))
 	return ctx.JSON(response.WebResponse{

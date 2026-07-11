@@ -1,11 +1,13 @@
 package controller
 
 import (
+	"GO-AUTH-JWT/exception"
 	"GO-AUTH-JWT/helper"
 	"GO-AUTH-JWT/models/dto/request"
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/service"
 	"net/http"
+
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
@@ -41,7 +43,13 @@ func (controller *EventControllerImpl) Create(ctx fiber.Ctx) (_ error) {
 	userId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
 	eventRequest.UserId = int64(userId)
 
-	eventResponse := controller.EventService.Create(ctx.Context(), eventRequest)
+	// ! ambil file image dari form
+	fileImage, err := ctx.FormFile("image")
+	if err != nil {
+		panic(exception.NewCustomBadRequestError("Gambar wajib ada!"))
+	}
+
+	eventResponse := controller.EventService.Create(ctx.Context(), eventRequest, fileImage)
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
@@ -65,7 +73,13 @@ func (controller *EventControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 	eventRequest.ID = int64(EventId)
 	eventRequest.UserId = int64(userId)
 
-	eventResponse := controller.EventService.Update(ctx.Context(), eventRequest)
+	// ! ambil file image dari form
+	fileImage, err := ctx.FormFile("image")
+	if err != nil {
+		panic(exception.NewCustomBadRequestError("Gambar wajib ada!"))
+	}
+
+	eventResponse := controller.EventService.Update(ctx.Context(), eventRequest, fileImage)
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,

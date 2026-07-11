@@ -33,6 +33,12 @@ func ErrorHandler(c fiber.Ctx, err error) error {
 	if validationError(c, err) {
 		return nil
 	}
+	if customInternalServerError(c, err) {
+		return nil
+	}
+	if customBadRequestError(c, err) {
+		return nil
+	}
 	InternalServerError(c, err)
 	return nil
 }
@@ -47,6 +53,40 @@ func unauthorizedError(ctx fiber.Ctx, err any) bool {
 			Code:   http.StatusUnauthorized,
 			Status: http.StatusText(http.StatusUnauthorized),
 			Data:   exception.error, // atau exception.Message tergantung structmu
+		}
+		ctx.JSON(webResponse)
+		return true
+	}
+	return false
+}
+
+func customInternalServerError(ctx fiber.Ctx, err any) bool {
+	exception, ok := err.(CustomInternalServerError)
+	if ok {
+		ctx.Set("Content-Type", "application/json")
+		ctx.Status(http.StatusInternalServerError)
+
+		webResponse := response.WebResponse{
+			Code:   http.StatusInternalServerError,
+			Status: http.StatusText(http.StatusInternalServerError),
+			Data:   exception.error, 
+		}
+		ctx.JSON(webResponse)
+		return true
+	}
+	return false
+}
+
+func customBadRequestError(ctx fiber.Ctx, err any) bool {
+	exception, ok := err.(CustomBadRequestError)
+	if ok {
+		ctx.Set("Content-Type", "application/json")
+		ctx.Status(http.StatusBadRequest)
+
+		webResponse := response.WebResponse{
+			Code:   http.StatusBadRequest,
+			Status: http.StatusText(http.StatusBadRequest),
+			Data:   exception.error, 
 		}
 		ctx.JSON(webResponse)
 		return true

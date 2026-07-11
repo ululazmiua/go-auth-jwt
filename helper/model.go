@@ -37,6 +37,8 @@ func ToEventResponse(event domain.Event) response.EventResponse {
 		ID:          event.ID,
 		UserId:      event.UserID,
 		Name:        event.Name,
+		Image:       event.Image,
+		ImageId:     event.ImageId,
 		Description: event.Description,
 		Location:    event.Location,
 		DateTime:    event.DateTime,

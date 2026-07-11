@@ -11,6 +11,7 @@ import (
 	"GO-AUTH-JWT/controller"
 	"GO-AUTH-JWT/repository"
 	"GO-AUTH-JWT/service"
+	"GO-AUTH-JWT/storage"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
 )
@@ -28,7 +29,9 @@ func InitializedServer() *app.Server {
 	userService := service.NewUserService(repositoryUserRepository, db, validate)
 	userController := controller.NewUserController(userService)
 	eventRepository := repository.NewEventRepository()
-	eventService := service.NewEventService(eventRepository, db, validate)
+	client := storage.InitImageKit()
+	uploader := storage.NewImagekitUploader(client)
+	eventService := service.NewEventService(eventRepository, db, uploader, validate)
 	eventController := controller.NewEventController(eventService)
 	server := app.BuildServer(fiberApp, authController, userController, eventController)
 	return server
@@ -46,4 +49,4 @@ var authSet = wire.NewSet(service.NewAuthService, controller.NewAuthController)
 
 var userSet = wire.NewSet(service.NewUserService, controller.NewUserController)
 
-var eventSet = wire.NewSet(repository.NewEventRepository, service.NewEventService, controller.NewEventController)
+var eventSet = wire.NewSet(repository.NewEventRepository, service.NewEventService, storage.NewImagekitUploader, storage.InitImageKit, controller.NewEventController)

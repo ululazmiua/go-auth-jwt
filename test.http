@@ -33,7 +33,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTY0N
 
 ### create event
 POST http://localhost:3000/user/event
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTY0NjksInN1YiI6M30.9HPRvqJHtOAP8rF2UET1LGZ6HFTJxea0R5MyHQEWQgs
 

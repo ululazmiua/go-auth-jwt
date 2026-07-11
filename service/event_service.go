@@ -4,6 +4,7 @@ import (
 	"GO-AUTH-JWT/models/dto/request"
 	"GO-AUTH-JWT/models/dto/response"
 	"context"
+	"mime/multipart"
 )
 
 // ! event_service.go itu untuk apa?
@@ -17,8 +18,8 @@ import (
 // ● aturan bisnis (misalnya cek duplikat, dll)
 
 type EventService interface {
-	Create(ctx context.Context, request request.EventCreateRequest) response.EventResponse
-	Update(ctx context.Context, request request.EventUpdateRequest) response.EventResponse
+	Create(ctx context.Context, request request.EventCreateRequest, fileImage *multipart.FileHeader) response.EventResponse
+	Update(ctx context.Context, request request.EventUpdateRequest, fileImage *multipart.FileHeader) response.EventResponse
 	Delete(ctx context.Context, eventId int64, userId int64)
 	FindById(ctx context.Context, eventId int64, userId int64) response.EventResponse
 	FindAll(ctx context.Context, userId int64) []response.EventResponse

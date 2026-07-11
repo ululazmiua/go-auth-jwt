@@ -7,7 +7,9 @@ import (
 	"GO-AUTH-JWT/models/dto/request"
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/repository"
+	"GO-AUTH-JWT/storage"
 	"context"
+	"mime/multipart"
 
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -26,25 +28,39 @@ import (
 type EventServiceImpl struct {
 	EventRepository repository.EventRepository
 	DB              *gorm.DB
+	Storage         storage.Uploader
 	validate        *validator.Validate
 }
 
-func NewEventService(eventRepository repository.EventRepository, DB *gorm.DB, validate *validator.Validate) EventService {
+func NewEventService(eventRepository repository.EventRepository, DB *gorm.DB, storage storage.Uploader, validate *validator.Validate) EventService {
 	return &EventServiceImpl{
 		EventRepository: eventRepository,
 		DB:              DB,
+		Storage:         storage,
 		validate:        validate,
 	}
 }
 
-func (service *EventServiceImpl) Create(ctx context.Context, request request.EventCreateRequest) (_ response.EventResponse) {
-	err := service.validate.Struct(request)
+func (service *EventServiceImpl) Create(ctx context.Context, request request.EventCreateRequest, fileImage *multipart.FileHeader) (_ response.EventResponse) {
+	file, err := fileImage.Open()
+	if err != nil {
+		panic(exception.NewCustomBadRequestError("Gambar wajib ada!"))
+	}
+
+	responseUpload, err := service.Storage.Upload(ctx, file, fileImage.Filename)
+
+	request.Image = responseUpload.URL
+	request.ImageId = responseUpload.FileID
+
+	err = service.validate.Struct(request)
 	helper.PanicIfError(err)
 
 	event := domain.Event{
 		UserID:      request.UserId,
 		Name:        request.Name,
 		Description: request.Description,
+		Image:       request.Image,
+		ImageId:     request.ImageId,
 		Location:    request.Location,
 		DateTime:    request.DateTime,
 	}
@@ -53,7 +69,7 @@ func (service *EventServiceImpl) Create(ctx context.Context, request request.Eve
 	return helper.ToEventResponse(event)
 }
 
-func (service *EventServiceImpl) Update(ctx context.Context, request request.EventUpdateRequest) (_ response.EventResponse) {
+func (service *EventServiceImpl) Update(ctx context.Context, request request.EventUpdateRequest, fileImage *multipart.FileHeader) (_ response.EventResponse) {
 	err := service.validate.Struct(request)
 	helper.PanicIfError(err)
 
@@ -64,6 +80,7 @@ func (service *EventServiceImpl) Update(ctx context.Context, request request.Eve
 
 	event.Name = request.Name
 	event.Description = request.Description
+	event.Image = request.Image
 	event.Location = request.Location
 	event.DateTime = request.DateTime
 

@@ -28,6 +28,8 @@ type Event struct {
 	UserID      int64          `gorm:"column:user_id;not null"`
 	Name        string         `gorm:"column:name;not null"`
 	Description string         `gorm:"column:description;not null"`
+	Image       string         `gorm:"column:image;not null"`
+	ImageId     string         `gorm:"column:image_id;not null"`
 	Location    string         `gorm:"column:location;not null"`
 	DateTime    time.Time      `gorm:"column:date_time;not null"`
 	CreatedAt   time.Time      `gorm:"column:created_at;autoCreateTime;not null"`

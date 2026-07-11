@@ -16,6 +16,8 @@ type EventResponse struct {
 	UserId      int64     `json:"user_id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
+	Image       string    `json:"image"`
+	ImageId     string    `json:"image_id"`
 	Location    string    `json:"location"`
 	DateTime    time.Time `json:"date_time"`
 }

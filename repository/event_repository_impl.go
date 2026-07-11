@@ -36,6 +36,8 @@ func (repository *EventRepositoryImpl) Save(ctx context.Context, db *gorm.DB, ev
 		UserID:      user.ID,
 		Name:        event.Name,
 		Description: event.Description,
+		Image:       event.Image,
+		ImageId:     event.ImageId,
 		Location:    event.Location,
 		DateTime:    event.DateTime,
 	}
@@ -64,6 +66,7 @@ func (repository *EventRepositoryImpl) Update(ctx context.Context, db *gorm.DB, 
 	Event.Name = event.Name
 	Event.Description = event.Description
 	Event.Location = event.Location
+	Event.Image = event.Image
 	Event.DateTime = event.DateTime
 	Event.UserID = event.UserID
 

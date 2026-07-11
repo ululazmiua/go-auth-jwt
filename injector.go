@@ -8,6 +8,7 @@ import (
 	"GO-AUTH-JWT/controller"
 	"GO-AUTH-JWT/repository"
 	"GO-AUTH-JWT/service"
+	"GO-AUTH-JWT/storage"
 
 	"github.com/go-playground/validator/v10"
 
@@ -29,6 +30,8 @@ var userSet = wire.NewSet(
 var eventSet = wire.NewSet(
 	repository.NewEventRepository,
 	service.NewEventService,
+	storage.NewImagekitUploader,
+	storage.InitImageKit,
 	controller.NewEventController,
 )
 
