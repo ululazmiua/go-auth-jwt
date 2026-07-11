@@ -71,7 +71,6 @@ func (controller *EventControllerImpl) Update(ctx fiber.Ctx) (_ error) {
 	eventRequest.UserId = int64(userId)
 
 	eventRequest.ID = int64(EventId)
-	eventRequest.UserId = int64(userId)
 
 	// ! ambil file image dari form
 	fileImage, err := ctx.FormFile("image")

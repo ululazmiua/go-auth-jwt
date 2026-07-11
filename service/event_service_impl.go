@@ -9,6 +9,8 @@ import (
 	"GO-AUTH-JWT/repository"
 	"GO-AUTH-JWT/storage"
 	"context"
+	"fmt"
+	"log"
 	"mime/multipart"
 
 	"github.com/go-playground/validator/v10"
@@ -48,7 +50,6 @@ func (service *EventServiceImpl) Create(ctx context.Context, request request.Eve
 	}
 
 	responseUpload, err := service.Storage.Upload(ctx, file, fileImage.Filename)
-
 	request.Image = responseUpload.URL
 	request.ImageId = responseUpload.FileID
 
@@ -69,22 +70,54 @@ func (service *EventServiceImpl) Create(ctx context.Context, request request.Eve
 	return helper.ToEventResponse(event)
 }
 
-func (service *EventServiceImpl) Update(ctx context.Context, request request.EventUpdateRequest, fileImage *multipart.FileHeader) (_ response.EventResponse) {
-	err := service.validate.Struct(request)
-	helper.PanicIfError(err)
-
+func (service *EventServiceImpl) Update(ctx context.Context, request request.EventUpdateRequest, fileImage *multipart.FileHeader) response.EventResponse {
 	event, err := service.EventRepository.FindById(ctx, service.DB, request.ID, request.UserId)
 	if err != nil {
-		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
+		panic(exception.NewNotFoundError(err.Error()))
 	}
 
+	// Simpan image lama
+	oldImageID := event.ImageId
+
+	// Validasi request
+	err = service.validate.Struct(request)
+	helper.PanicIfError(err)
+
+	file, err := fileImage.Open()
+	if err != nil {
+		panic(exception.NewCustomBadRequestError("Gambar wajib ada"))
+	}
+	defer file.Close()
+
+	// Upload gambar baru
+	uploadResult, err := service.Storage.Upload(ctx, file, fileImage.Filename)
+	if err != nil {
+		panic(exception.NewCustomInternalServerError(err.Error()))
+	}
+
+	// Update object event
 	event.Name = request.Name
 	event.Description = request.Description
-	event.Image = request.Image
 	event.Location = request.Location
 	event.DateTime = request.DateTime
+	event.Image = uploadResult.URL
+	event.ImageId = uploadResult.FileID
 
+	// Simpan ke database
 	event = service.EventRepository.Update(ctx, service.DB, &event, request.UserId)
+
+	// Jika update database gagal dan repository mengembalikan error,
+	// lakukan rollback upload di sini.
+	// Karena repository Anda saat ini menggunakan panic,
+	// rollback ini belum bisa dilakukan.
+
+	// Hapus gambar lama (best effort)
+	if oldImageID != "" {
+		if err := service.Storage.Delete(ctx, oldImageID); err != nil {
+			log.Printf("failed delete old image: %v", err)
+			fmt.Println(err)
+		}
+	}
 
 	return helper.ToEventResponse(event)
 }
@@ -94,6 +127,12 @@ func (service *EventServiceImpl) Delete(ctx context.Context, eventId int64, user
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error())) // ? exception.NewNotFoundError(err.Error()) => digunakan untuk mengecek apakah category dengan id tersebut ada di db, err.Error() => digunakan untuk mengambil pesan error
 	}
+
+	err = service.Storage.Delete(ctx, event.ImageId)
+	if err != nil {
+		panic(exception.NewCustomInternalServerError(err.Error()))
+	}
+
 	service.EventRepository.Delete(ctx, service.DB, event.ID, userId)
 }
 

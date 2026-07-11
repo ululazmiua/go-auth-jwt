@@ -46,7 +46,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTY0N
 
 ### update event 
 PUT  http://localhost:3000/user/event/1
-Content-Type: application/json
+Content-Type: multipart/form-data
 Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODQxOTU5NjMsInN1YiI6M30.J2W0xUXswkXsIBiyN5C5FN9W0S6OJqpK8rtLmE2QOmA
 

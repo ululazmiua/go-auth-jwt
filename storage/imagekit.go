@@ -39,6 +39,11 @@ func (uploader *ImagekitUploader) Upload(ctx context.Context, file io.Reader, fi
 	return UploadResult{URL: responseUpload.URL, FileID: responseUpload.FileID}, nil
 }
 
-func (uploader *ImagekitUploader) Delete(ctx context.Context, fileID string) (_ error) {
-	panic("not implemented") // TODO: Implement
+func (uploader *ImagekitUploader) Delete(ctx context.Context, fileID string) error {
+	// delete image from imagekit
+	err := uploader.client.Files.Delete(ctx, fileID)
+	if err != nil {
+		panic(exception.NewCustomInternalServerError("Gagal menghapus gambar Imagekit"))
+	}
+	return nil
 }
