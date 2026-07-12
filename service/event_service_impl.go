@@ -11,6 +11,7 @@ import (
 	"context"
 	"fmt"
 	"mime/multipart"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -138,8 +139,22 @@ func (service *EventServiceImpl) FindById(ctx context.Context, eventId int64, us
 	return helper.ToEventResponse(event)
 }
 
-func (service *EventServiceImpl) FindAll(ctx context.Context, userId int64) (_ []response.EventResponse) {
-	events := service.EventRepository.FindAll(ctx, service.DB, userId)
+func (service *EventServiceImpl) FindAll(ctx context.Context, userId int64, querySearch string, page string, limit string) ([]response.EventResponse, int64) {
+	// hitung total data
+	pageInt, err := strconv.Atoi(page)
+	if err != nil || pageInt < 1 {
+		pageInt = 1
+	}
 
-	return helper.ToEventsResponse(events)
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil || limitInt < 1 {
+		limitInt = 6
+	}
+
+	// hitung offset
+	offset := (pageInt - 1) * limitInt // ? dikurang satu karena ingin menampilkan page ke berapa
+
+	events, totalData := service.EventRepository.FindAll(ctx, service.DB, userId, querySearch, offset, limitInt)
+
+	return helper.ToEventsResponse(events), totalData
 }

@@ -22,5 +22,5 @@ type EventService interface {
 	Update(ctx context.Context, request request.EventUpdateRequest, fileImage *multipart.FileHeader) response.EventResponse
 	Delete(ctx context.Context, eventId int64, userId int64)
 	FindById(ctx context.Context, eventId int64, userId int64) response.EventResponse
-	FindAll(ctx context.Context, userId int64) []response.EventResponse
+	FindAll(ctx context.Context, userId int64, querySearch string, page string, limit string) ([]response.EventResponse, int64)
 }

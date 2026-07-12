@@ -6,6 +6,7 @@ import (
 	"GO-AUTH-JWT/models/dto/request"
 	"GO-AUTH-JWT/models/dto/response"
 	"GO-AUTH-JWT/service"
+	"math"
 	"net/http"
 
 	"strconv"
@@ -122,12 +123,28 @@ func (controller *EventControllerImpl) FindById(ctx fiber.Ctx) (_ error) {
 func (controller *EventControllerImpl) FindAll(ctx fiber.Ctx) (_ error) {
 	// ! ambil id user dari token
 	userId := ctx.Locals("userId").(float64) // ctx.Locals() => untuk mengambil data dari context
+	querySearch := ctx.Query("search")
+	page := ctx.Query("page", "1")
+	limit := ctx.Query("limit", "6")
 
-	EventsResponse := controller.EventService.FindAll(ctx.Context(), int64(userId))
+	EventsResponse, totalData := controller.EventService.FindAll(ctx.Context(), int64(userId), querySearch, page, limit)
+
+	limitInt, err := strconv.Atoi(limit)
+	helper.PanicIfError(err)
+	pageInt, _ := strconv.Atoi(page)
+	helper.PanicIfError(err)
+
+	totalPage := int(math.Ceil(float64(totalData) / float64(limitInt))) // ? math.Ceil() => digunakan untuk membulatkan ke atas
 
 	return ctx.JSON(response.WebResponse{
 		Code:   http.StatusOK,
 		Status: http.StatusText(http.StatusOK),
 		Data:   EventsResponse,
+		Meta: map[string]any{
+			"page":       pageInt,
+			"limit":      limitInt,
+			"total_data": totalData,
+			"total_page": totalPage,
+		},
 	})
 }

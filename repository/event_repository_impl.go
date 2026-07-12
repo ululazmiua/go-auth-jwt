@@ -86,10 +86,23 @@ func (repository *EventRepositoryImpl) Delete(ctx context.Context, db *gorm.DB, 
 	helper.PanicIfError(err)
 }
 
-func (repository *EventRepositoryImpl) FindAll(ctx context.Context, db *gorm.DB, UserId int64) (_ []domain.Event) {
+func (repository *EventRepositoryImpl) FindAll(ctx context.Context, db *gorm.DB, UserId int64, querySearch string, offset int, limit int) (_ []domain.Event, _ int64) {
 	var Events []domain.Event
-	err := db.WithContext(ctx).Where("user_id = ?", UserId).Find(&Events).Error
+	dbQuery := db.WithContext(ctx).Model(domain.Event{}).Where("user_id = ?", UserId)
+
+	if querySearch != "" {
+		search := "%" + querySearch + "%"
+		dbQuery = dbQuery.Where("(name LIKE ? OR description LIKE ?)", search, search)
+	}
+
+	var totalData int64
+	dbQuery.Count(&totalData)
+
+	err := dbQuery.
+		Offset(offset).
+		Limit(limit).
+		Find(&Events).Error
 	helper.PanicIfError(err)
 
-	return Events
+	return Events, totalData
 }

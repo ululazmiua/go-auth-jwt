@@ -15,5 +15,5 @@ type EventRepository interface {
 	FindById(ctx context.Context, db *gorm.DB, id int64, UserId int64) (domain.Event, error)
 	Update(ctx context.Context, db *gorm.DB, event *domain.Event, UserId int64) domain.Event
 	Delete(ctx context.Context, db *gorm.DB, id int64, UserId int64)
-	FindAll(ctx context.Context, db *gorm.DB, UserId int64) []domain.Event
+	FindAll(ctx context.Context, db *gorm.DB, UserId int64, querySearch string, offset int, limit int) ([]domain.Event, int64)
 }
