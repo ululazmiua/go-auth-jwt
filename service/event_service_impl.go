@@ -10,7 +10,6 @@ import (
 	"GO-AUTH-JWT/storage"
 	"context"
 	"fmt"
-	"log"
 	"mime/multipart"
 
 	"github.com/go-playground/validator/v10"
@@ -51,7 +50,7 @@ func (service *EventServiceImpl) Create(ctx context.Context, request request.Eve
 
 	responseUpload, err := service.Storage.Upload(ctx, file, fileImage.Filename)
 	request.Image = responseUpload.URL
-	request.ImageId = responseUpload.FileID
+	request.ImageId = responseUpload.FileIDImageKit
 
 	err = service.validate.Struct(request)
 	helper.PanicIfError(err)
@@ -71,17 +70,18 @@ func (service *EventServiceImpl) Create(ctx context.Context, request request.Eve
 }
 
 func (service *EventServiceImpl) Update(ctx context.Context, request request.EventUpdateRequest, fileImage *multipart.FileHeader) response.EventResponse {
+	// Validasi request
+	err := service.validate.Struct(request)
+	helper.PanicIfError(err)
+
 	event, err := service.EventRepository.FindById(ctx, service.DB, request.ID, request.UserId)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	// Simpan image lama
+	// Simpan id image lama
 	oldImageID := event.ImageId
-
-	// Validasi request
-	err = service.validate.Struct(request)
-	helper.PanicIfError(err)
+	fmt.Println("gambar lama: ", oldImageID)
 
 	file, err := fileImage.Open()
 	if err != nil {
@@ -101,22 +101,15 @@ func (service *EventServiceImpl) Update(ctx context.Context, request request.Eve
 	event.Location = request.Location
 	event.DateTime = request.DateTime
 	event.Image = uploadResult.URL
-	event.ImageId = uploadResult.FileID
+	event.ImageId = uploadResult.FileIDImageKit
 
 	// Simpan ke database
 	event = service.EventRepository.Update(ctx, service.DB, &event, request.UserId)
 
-	// Jika update database gagal dan repository mengembalikan error,
-	// lakukan rollback upload di sini.
-	// Karena repository Anda saat ini menggunakan panic,
-	// rollback ini belum bisa dilakukan.
-
-	// Hapus gambar lama (best effort)
-	if oldImageID != "" {
-		if err := service.Storage.Delete(ctx, oldImageID); err != nil {
-			log.Printf("failed delete old image: %v", err)
-			fmt.Println(err)
-		}
+	// Hapus gambar lama
+	err = service.Storage.Delete(ctx, oldImageID)
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 
 	return helper.ToEventResponse(event)

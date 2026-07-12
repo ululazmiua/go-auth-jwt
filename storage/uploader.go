@@ -14,5 +14,5 @@ type Uploader interface {
 
 type UploadResult struct {
 	URL    string
-	FileID string
+	FileIDImageKit string
 }

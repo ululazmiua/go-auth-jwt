@@ -67,6 +67,7 @@ func (repository *EventRepositoryImpl) Update(ctx context.Context, db *gorm.DB, 
 	Event.Description = event.Description
 	Event.Location = event.Location
 	Event.Image = event.Image
+	Event.ImageId = event.ImageId
 	Event.DateTime = event.DateTime
 	Event.UserID = event.UserID
 

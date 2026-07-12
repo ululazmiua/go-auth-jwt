@@ -3,6 +3,7 @@ package storage
 import (
 	"GO-AUTH-JWT/exception"
 	"context"
+	"fmt"
 	"io"
 	"os"
 
@@ -36,14 +37,16 @@ func (uploader *ImagekitUploader) Upload(ctx context.Context, file io.Reader, fi
 		panic(exception.NewCustomInternalServerError("Gagal upload gambar Imagekit"))
 	}
 
-	return UploadResult{URL: responseUpload.URL, FileID: responseUpload.FileID}, nil
+	return UploadResult{URL: responseUpload.URL, FileIDImageKit: responseUpload.FileID}, nil
 }
 
 func (uploader *ImagekitUploader) Delete(ctx context.Context, fileID string) error {
 	// delete image from imagekit
 	err := uploader.client.Files.Delete(ctx, fileID)
 	if err != nil {
+		fmt.Println(err)
 		panic(exception.NewCustomInternalServerError("Gagal menghapus gambar Imagekit"))
 	}
+	fmt.Println("Gambar berhasil dihapus")
 	return nil
 }
